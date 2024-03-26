@@ -1,0 +1,9 @@
+{
+	"folders": [
+		{
+			"name": "SAST_SCA_Results_v3",
+			"path": "."
+		}
+	],
+	"settings": {}
+}
