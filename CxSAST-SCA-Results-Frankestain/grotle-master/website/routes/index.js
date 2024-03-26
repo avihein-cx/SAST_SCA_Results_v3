@@ -150,9 +150,11 @@ router.get('/blog/:slug', async (req, res, next) => {
 });
 
 /* Get Projects post */
-router.get('/projects/:slug', async (req, res, next) => {
-  let slug = req.params.slug;
+const sanitizeUrl = require('sanitize-url');
 
+router.get('/projects/:slug', async (req, res, next) => {
+  let slug = sanitizeUrl(req.params.slug);
+  
   var page = {
     render: 'post',
     name: 'post',
@@ -166,7 +168,7 @@ router.get('/projects/:slug', async (req, res, next) => {
       url: process.env.BASE_URL + "/blog/" + slug
     }
   };
-  
+
   try {
     const resData = await axios.get(baseUrl + '/post/slug/' + slug + '?populate=dossier');
     page.post = resData.data;
