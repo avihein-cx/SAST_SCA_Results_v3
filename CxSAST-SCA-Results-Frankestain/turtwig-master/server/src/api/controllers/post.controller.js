@@ -83,6 +83,18 @@ exports.getPostBySlug = async (req, res, next) => {
 }
 
 
+    // Sanitize returned output before sending as HTTP response
+    let sanitizedOutput = JSON.stringify(result);
+    sanitizedOutput = sanitizedOutput.replace(/[<>'"]/g, m => { return {'<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[m]});
+    
+    res.status(200).jsonp(JSON.parse(sanitizedOutput));
+
+  } catch (err) {
+    return next(APIError(err));
+  }
+}
+
+
 /**
  * POST Add new post
  */
