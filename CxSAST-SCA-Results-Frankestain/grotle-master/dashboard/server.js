@@ -1,21 +1,18 @@
 const express = require('express');
 const helmet = require('helmet');
-
+ 
 const app = express();
-
-app.use(helmet.hsts({ 
-  maxAge: 31536000,  // Set the `max-age` value to 1 year
-  includeSubDomains: true, // Add the `includeSubDomains`
-  preload: true // Opt-in for HSTS preload list
+ 
+app.use(helmet.hsts({
+  maxAge: 31536000,    // One year in seconds
+  includeSubDomains: true,
+  preload: true
 }));
-
+ 
 app.get('*', function(req,res) {
-  res.sendFile(path.join(__dirname + '/dist/torterra-dashboard/index.html'));
+  res.sendFile(path.join(__dirname + '/dist/torterra-dashboard/index.html'));//SAST Node #0 (input): sendFile ()
+// method continues ...
 });
-
-// method continues ...
-
-// method continues ...
 
 
 // Start the app by listening on the default Heroku port
