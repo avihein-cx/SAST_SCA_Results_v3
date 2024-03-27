@@ -55,25 +55,33 @@ exports.getPostBySlug = async (req, res, next) => {
     const { projection, population } = aqp(req.query);
 
     const slug = req.params.slug;
-    if (!funcsUtils.validateSlug(slug))
+    if (!funcsUtils.validateSlug(slug)) {
       return next(new APIError({
         message: "Post not found!",
         status: httpStatus.NOT_FOUND
       }));
-
+    }
+  
     const result = await Post.findOne({ slug: slug }).populate(population).select(projection);
-
-    if (!result)
+  
+    if (!result) {
       return next(new APIError({
         message: "Post not found!",
         status: httpStatus.NOT_FOUND
       }));
+    }
 
-    res.status(200).jsonp(result);
+    // Sanitize returned output before sending as HTTP response
+    let sanitizedOutput = JSON.stringify(result);
+    sanitizedOutput = sanitizedOutput.replace(/[<>'"]/g, m => { return {'<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'}[m]});
+    
+    res.status(200).jsonp(JSON.parse(sanitizedOutput));
+
   } catch (err) {
-    next(err);
+    return next(APIError(err));
   }
-};
+}
+
 
 /**
  * POST Add new post

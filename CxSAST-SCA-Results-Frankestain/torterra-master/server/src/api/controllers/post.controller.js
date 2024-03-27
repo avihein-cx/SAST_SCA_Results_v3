@@ -50,6 +50,8 @@ exports.getPostById = async (req, res, next) => {
 /**
  * Get Post by :slug
  */
+let sanitizeHtml = require('sanitize-html');
+
 exports.getPostBySlug = async (req, res, next) => {
   try {
     const { projection, population } = aqp(req.query);
@@ -62,14 +64,20 @@ exports.getPostBySlug = async (req, res, next) => {
       }));
 
     const result = await Post.findOne({ slug: slug }).populate(population).select(projection);
-
+    
     if (!result)
       return next(new APIError({
         message: "Post not found!",
         status: httpStatus.NOT_FOUND
       }));
 
-    res.status(200).jsonp(result);
+    let clean = sanitizeHtml(result);
+    res.status(200).jsonp(clean);
+
+    // method continues ...
+  }
+}
+
   } catch (err) {
     next(err);
   }
